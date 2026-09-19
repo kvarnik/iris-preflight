@@ -1,16 +1,8 @@
 import { authHeaders } from "./auth";
-import type { AdminEnvelope, Operation, ServerInfo } from "./types";
+import { demoAdminCall, demoInfo, demoPreflightFetch, isDemoMode } from "./demo";
+import type { AdminEnvelope, CallResult, Operation, ServerInfo } from "./types";
 
-export type CallResult = {
-  ok: boolean;
-  status: number;
-  envelope: AdminEnvelope | null;
-  raw: unknown;
-  location: string | null;
-  asyncTaskGUID: string | null;
-  error: string | null;
-  privilegeDenied: boolean;
-};
+export type { CallResult };
 
 function decodeEntities(value: string): string {
   return value
@@ -91,6 +83,7 @@ export async function adminCall(
   pathAndQuery: string,
   body?: unknown,
 ): Promise<CallResult> {
+  if (isDemoMode()) return demoAdminCall(method, pathAndQuery, body);
   const headers: Record<string, string> = {
     Accept: "application/json",
     ...authHeaders(),
@@ -126,6 +119,7 @@ export async function adminCall(
 }
 
 export async function getInfo(basic: string): Promise<ServerInfo> {
+  if (isDemoMode()) return demoInfo("superuser");
   const response = await fetch("/api/admin/info", {
     headers: { Authorization: `Basic ${basic}`, Accept: "application/json" },
   });
@@ -138,6 +132,7 @@ export async function getInfo(basic: string): Promise<ServerInfo> {
 }
 
 export async function preflightFetch(path: string, init?: RequestInit): Promise<Response> {
+  if (isDemoMode()) return demoPreflightFetch(path, init);
   const headers: Record<string, string> = {
     Accept: "application/json",
     ...authHeaders(),

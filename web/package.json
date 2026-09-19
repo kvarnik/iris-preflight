@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:demo": "VITE_DEMO=true vite",
     "build": "tsc --noEmit && vite build",
+    "build:pages": "tsc --noEmit && VITE_DEMO=true GITHUB_PAGES=true vite build",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -85,8 +85,12 @@ export function Explorer({ writeEnabled, onJob, onJournal }: Props) {
     }
     const res = await adminCall("GET", `/v2/security/role?name=${encodeURIComponent(name)}`);
     const role = res.envelope?.result as { Resources?: { Name?: string; Permissions?: string }[] } | undefined;
+    if (name === "%All") {
+      setSimulated(new Set(inventory.privileges.map((privilege) => privilege.name)));
+      return;
+    }
     const extra = privilegesFromRoleResources(role?.Resources);
-    setSimulated(new Set([...held, ...extra]));
+    setSimulated(extra);
   }
 
   async function snapshotBefore(op: Operation): Promise<unknown> {

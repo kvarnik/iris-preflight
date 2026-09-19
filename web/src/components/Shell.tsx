@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { clearSession, getSession } from "../lib/auth";
+import { disableDemoMode, isDemoMode } from "../lib/demo";
 import type { Job } from "../lib/types";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -32,6 +33,7 @@ export function Shell({ view, onView, writeEnabled, onToggleWrite, jobs, childre
           <div className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.2em] text-iris">IRIS Preflight</div>
           <div className="truncate text-sm text-white/70">
             {session?.info.username} · {session?.info.product} · api v{session?.info.apiVersion}
+            {isDemoMode() ? " · demo" : ""}
           </div>
         </div>
         <nav className="flex flex-wrap gap-1">
@@ -62,6 +64,7 @@ export function Shell({ view, onView, writeEnabled, onToggleWrite, jobs, childre
           </button>
           <button
             onClick={() => {
+              disableDemoMode();
               clearSession();
               window.location.reload();
             }}

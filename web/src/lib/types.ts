@@ -72,6 +72,17 @@ export type AdminEnvelope = {
   result?: unknown;
 };
 
+export type CallResult = {
+  ok: boolean;
+  status: number;
+  envelope: AdminEnvelope | null;
+  raw: unknown;
+  location: string | null;
+  asyncTaskGUID: string | null;
+  error: string | null;
+  privilegeDenied: boolean;
+};
+
 export type Preview = {
   allowed: boolean;
   mode: PrivilegeMode;

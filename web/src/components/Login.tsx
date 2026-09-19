@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { encodeBasic, setSession } from "../lib/auth";
 import { getInfo } from "../lib/api";
+import { demoInfo, enableDemoMode, isDemoBuild, type DemoPersona } from "../lib/demo";
 import { fieldClass } from "../lib/theme";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -35,37 +36,75 @@ export function Login({ onReady }: Props) {
       </div>
       <form onSubmit={onSubmit} className="w-full max-w-md rounded-2xl border border-line bg-surface-raised p-8 shadow-xl">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-iris">IRIS Preflight</p>
-        <h1 className="mt-2 text-2xl font-semibold text-ink">Connect to SysAdmin API</h1>
+        <h1 className="mt-2 text-2xl font-semibold text-ink">
+          {isDemoBuild() ? "Browser demo" : "Connect to SysAdmin API"}
+        </h1>
         <p className="mt-2 text-sm text-ink-muted">
-          Credentials stay in a JS closure for this tab. They are sent only as an Authorization header.
+          {isDemoBuild()
+            ? "No InterSystems instance is required. Pick a persona and explore the SysAdmin API against a local mock."
+            : "Credentials stay in a JS closure for this tab. They are sent only as an Authorization header."}
         </p>
-        <label className="mt-6 block text-sm text-ink">
-          Username
-          <input
-            className={fieldClass}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
-          />
-        </label>
-        <label className="mt-4 block text-sm text-ink">
-          Password
-          <input
-            type="password"
-            className={fieldClass}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
-        </label>
-        {error ? <p className="mt-4 text-sm text-danger">{error}</p> : null}
-        <button
-          type="submit"
-          disabled={busy}
-          className="mt-6 w-full rounded-lg bg-iris px-4 py-2 font-medium text-white hover:bg-iris-hover disabled:opacity-50"
-        >
-          {busy ? "Checking /info…" : "Connect"}
-        </button>
+        {isDemoBuild() ? null : (
+          <>
+            <label className="mt-6 block text-sm text-ink">
+              Username
+              <input
+                className={fieldClass}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+              />
+            </label>
+            <label className="mt-4 block text-sm text-ink">
+              Password
+              <input
+                type="password"
+                className={fieldClass}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </label>
+            {error ? <p className="mt-4 text-sm text-danger">{error}</p> : null}
+            <button
+              type="submit"
+              disabled={busy}
+              className="mt-6 w-full rounded-lg bg-iris px-4 py-2 font-medium text-white hover:bg-iris-hover disabled:opacity-50"
+            >
+              {busy ? "Checking /info…" : "Connect"}
+            </button>
+          </>
+        )}
+        <div className={`${isDemoBuild() ? "mt-6" : "mt-6 border-t border-line pt-5"}`}>
+          <p className="text-sm text-ink-muted">
+            {isDemoBuild()
+              ? "This GitHub Pages build talks to a local mock of the SysAdmin API. Nothing is sent to an InterSystems instance."
+              : "No IRIS instance nearby? Open the same UI against a local mock of all 276 operations."}
+          </p>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {(
+              [
+                ["superuser", "SuperUser"],
+                ["operator", "Operator"],
+                ["secure", "Security"],
+              ] as [DemoPersona, string][]
+            ).map(([persona, label]) => (
+              <button
+                key={persona}
+                type="button"
+                className="rounded-lg border border-line px-2 py-2 text-xs font-medium text-ink hover:bg-surface-input"
+                onClick={() => {
+                  enableDemoMode();
+                  const info = demoInfo(persona);
+                  setSession({ username: info.username, basic: "demo", info });
+                  onReady();
+                }}
+              >
+                Demo as {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </form>
     </div>
   );
