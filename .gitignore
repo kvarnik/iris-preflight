@@ -1,0 +1,9 @@
+node_modules/
+web/dist
+web/.vite
+__pycache__/
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/settings.json

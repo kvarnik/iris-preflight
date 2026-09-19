@@ -1,0 +1,16 @@
+zn "%SYS"
+do ##class(Security.Users).UnExpireUserPasswords("*")
+kill props
+set props("Password")="SYS"
+set props("PasswordNeverExpires")=1
+set props("ChangePassword")=0
+set props("Enabled")=1
+set sc=##class(Security.Users).Modify("SuperUser",.props)
+if $SYSTEM.Status.IsError(sc) do $SYSTEM.Process.Terminate($JOB,1)
+zn "USER"
+set sc=$SYSTEM.OBJ.LoadDir("/home/irisowner/dev/src","ck",,1)
+if $SYSTEM.Status.IsError(sc) do $SYSTEM.Process.Terminate($JOB,1)
+set sc=##class(Preflight.Installer).Setup()
+if $SYSTEM.Status.IsError(sc) do $SYSTEM.Process.Terminate($JOB,1)
+write !,"Preflight installed",!
+halt

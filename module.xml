@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26">
+  <Document name="iris-preflight.ZPM">
+    <Module>
+      <Name>iris-preflight</Name>
+      <Version>1.0.0</Version>
+      <Description>Privilege-aware execution console for the InterSystems IRIS SysAdmin REST API</Description>
+      <Keywords>iris sysadmin contest preflight</Keywords>
+      <Packaging>module</Packaging>
+      <SourcesRoot>src</SourcesRoot>
+      <Resource Name="Preflight.PKG"/>
+    </Module>
+  </Document>
+</Export>
