@@ -6,6 +6,8 @@ Preview a call against the connected user's `%Admin_*` privileges, execute it, j
 
 **Live demo (no IRIS instance):** https://kvarnik.github.io/iris-preflight/
 
+![IRIS Preflight Explorer](docs/iris-preflight.png)
+
 ## Run with Docker
 
 Requires [Docker](https://www.docker.com/). IRIS 2026.2 Community is pulled by the image.
